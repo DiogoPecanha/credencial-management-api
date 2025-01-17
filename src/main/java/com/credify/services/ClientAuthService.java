@@ -1,6 +1,8 @@
 package com.credify.services;
 
+import com.credify.domain.model.CredifyToken;
+
 public interface ClientAuthService {
-    String generateClientToken(String clientId, String clientSecret);
+    CredifyToken generateClientToken(String clientId, String clientSecret);
     boolean validateToken(String token);
 }

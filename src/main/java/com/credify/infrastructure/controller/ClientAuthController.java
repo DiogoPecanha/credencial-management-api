@@ -1,6 +1,9 @@
 package com.credify.infrastructure.controller;
 
+import com.credify.domain.model.CredifyToken;
 import com.credify.domain.model.TokenRequest;
+import com.credify.domain.model.TokenResponse;
+import com.credify.domain.model.TokenValidationRequest;
 import com.credify.exception.InvalidTokenException;
 import com.credify.services.ClientAuthService;
 import org.springframework.http.ResponseEntity;
@@ -16,19 +19,19 @@ public class ClientAuthController {
         this.clientAuthService = clientAuthService;
     }
 
-    @PostMapping()
-    public ResponseEntity<String> generateClientToken(@RequestBody TokenRequest tokenRequest) {
+    @PostMapping("/generate-token")
+    public ResponseEntity<TokenResponse> generateClientToken(@RequestBody TokenRequest tokenRequest) {
         try {
-            String token = clientAuthService.generateClientToken(tokenRequest.clientId(), tokenRequest.clientSecret());
-            return ResponseEntity.ok(token);
+            CredifyToken token = clientAuthService.generateClientToken(tokenRequest.clientId(), tokenRequest.clientSecret());
+            return ResponseEntity.ok(new TokenResponse(token.accessToken()));
         } catch (RuntimeException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
-    @GetMapping("/validate-token")
-    public ResponseEntity<String> validateToken(@RequestParam String token) {
-        if (clientAuthService.validateToken(token)) {
+    @PostMapping("/validate-token")
+    public ResponseEntity<String> validateToken(@RequestBody TokenValidationRequest tokenValidation) {
+        if (clientAuthService.validateToken(tokenValidation.token())) {
             return ResponseEntity.ok("Valid Token!");
         } else {
             throw new InvalidTokenException("Expired or invalid Token");

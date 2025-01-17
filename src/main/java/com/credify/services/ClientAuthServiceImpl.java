@@ -1,5 +1,6 @@
 package com.credify.services;
 
+import com.credify.domain.model.CredifyToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -27,7 +28,7 @@ public class ClientAuthServiceImpl implements ClientAuthService {
     }
 
     @Override
-    public String generateClientToken(String clientId, String clientSecret) {
+    public CredifyToken generateClientToken(String clientId, String clientSecret) {
         String tokenUrl = String.format("%s/protocol/openid-connect/token", issuerUri);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -42,7 +43,15 @@ public class ClientAuthServiceImpl implements ClientAuthService {
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
 
-        return response != null ? (String) response.get("access_token") : null;
+        CredifyToken token = null;
+        if (response != null){
+            var access_token = response.get("access_token").toString();
+            var expiresIn = Long.parseLong(response.get("expires_in").toString());
+            var tokenType = response.get("token_type").toString();
+            token = new CredifyToken(access_token, tokenType, expiresIn);
+        }
+
+        return token;
     }
 
     public boolean validateToken(String token) {

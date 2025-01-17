@@ -25,11 +25,19 @@ docker-compose up -d
 2. Log in with your admin credentials.
 
 ---
+## Creating the Realm
+1. Click on combobox **keycloak/master** → **Create realm**.
+2. Fill in the required fields:
+    - **Realm name:** `aquarium`    
+    - **Enabled:** `On`
+3. Click **Create**.
+
+---
 
 ## Creating the Client
 1. Go to **Clients** → **Create**.
 2. Fill in the required fields:
-    - **Client ID:** `bff-client`
+    - **Client ID:** `aquarium-bff`
     - **Client Protocol:** `openid-connect`
     - **Access Type:** `Confidential`
 3. Click **Save**.

@@ -1,0 +1,14 @@
+server:
+  port: 8045
+spring:
+  application:
+    name: credencial-management-api
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/aquarium
+logging:
+  level:
+    org.springframework: DEBUG
